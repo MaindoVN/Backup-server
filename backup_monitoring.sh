@@ -11,7 +11,7 @@ then
 fi
 
 # Copy key đến máy Backup Server bằng sshpass
-sshpass -p "123456" ssh-copy-id -i ~/.ssh/id_rsa_backup.pub -p 40905 root@192.168.30.50
+sshpass -p "123456" ssh-copy-id -p 40905 root@192.168.30.50
 
 # Tạo file backup_grafana_prometheus.sh với nội dung sau
 cat <<EOL > backup_grafana_prometheus.sh
