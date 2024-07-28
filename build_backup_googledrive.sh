@@ -31,6 +31,11 @@ expect "y/n> "
 send "y\r"
 expect "Enter verification code> "
 interact
+EOF
+
+# Resume script after authorization
+expect << EOF
+spawn rclone config
 expect "y/n> "
 send "y\r"
 expect "e/n/d/r/c/s/q> "
