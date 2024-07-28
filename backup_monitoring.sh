@@ -3,8 +3,15 @@
 # Tạo key cho ssh
 ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
 
-# Copy key đến máy Backup Server
-ssh-copy-id -p 40905 root@192.168.30.50
+# Cài đặt sshpass nếu chưa có
+if ! command -v sshpass &> /dev/null
+then
+    echo "sshpass chưa được cài đặt. Đang cài đặt sshpass..."
+    apt-get update && apt-get install -y sshpass
+fi
+
+# Copy key đến máy Backup Server bằng sshpass
+sshpass -p "123456" ssh-copy-id -i ~/.ssh/id_rsa_backup.pub -p 40905 root@192.168.30.50
 
 # Tạo file backup_grafana_prometheus.sh với nội dung sau
 cat <<EOL > backup_grafana_prometheus.sh
