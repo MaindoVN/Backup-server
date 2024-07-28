@@ -10,8 +10,13 @@ sudo apt install -y openssh-server
 echo "root:123456" | sudo chpasswd
 
 # Chỉnh sửa file sshd_config để cho phép đăng nhập root và thay đổi port
-sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-sudo sed -i 's/#Port 22/Port 40905/' /etc/ssh/sshd_config
+sudo sed -i '/^#PermitRootLogin /d' /etc/ssh/sshd_config
+sudo sed -i '/^PermitRootLogin /d' /etc/ssh/sshd_config
+echo 'PermitRootLogin yes' | sudo tee -a /etc/ssh/sshd_config
+
+sudo sed -i '/^#Port /d' /etc/ssh/sshd_config
+sudo sed -i '/^Port /d' /etc/ssh/sshd_config
+echo 'Port 40905' | sudo tee -a /etc/ssh/sshd_config
 
 # Khởi động lại dịch vụ SSH
 sudo systemctl restart ssh
