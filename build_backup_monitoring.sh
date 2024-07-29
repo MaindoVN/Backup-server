@@ -62,3 +62,6 @@ chmod +x backup_grafana_prometheus.sh
 
 # Tạo lịch backup tự động
 (crontab -l ; echo "28 13 * * * /home/ubuntu/backup_grafana_prometheus.sh") | crontab -
+
+# Chạy backup test
+/home/ubuntu/backup_grafana_prometheus.sh
