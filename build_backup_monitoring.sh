@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Hỏi người dùng nhập địa chỉ IP của máy muốn SSH
+read -p "Nhập địa chỉ IP của máy Backup Server: " backup_ip
+
 # Tạo key cho ssh
 ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
 
@@ -11,7 +14,7 @@ then
 fi
 
 # Copy key đến máy Backup Server bằng sshpass
-sshpass -p "123456" ssh-copy-id -p 40905 root@192.168.30.50
+sshpass -p "123456" ssh-copy-id -p 40905 root@$backup_ip
 
 # Tạo file backup_grafana_prometheus.sh với nội dung sau
 cat <<EOL > backup_grafana_prometheus.sh
@@ -19,7 +22,7 @@ cat <<EOL > backup_grafana_prometheus.sh
 
 Today=\$(date +"%m-%d-%Yat%Hh%M")
 TmpBkFol='/backup/monitoring'
-RemoteServer="root@192.168.30.50"
+RemoteServer="root@$backup_ip"
 RemotePort="40905"
 RemoteFolder="/backup/internal-tools/monitoring/\$Today"
 GrafanaDB='/var/lib/grafana/grafana.db'
