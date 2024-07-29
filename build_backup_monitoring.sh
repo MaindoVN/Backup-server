@@ -14,10 +14,10 @@ then
 fi
 
 # Copy key đến máy Backup Server bằng sshpass
-sshpass -p "123456" ssh-copy-id -p 40905 root@$backup_ip
+sshpass -p "123456" ssh-copy-id -o StrictHostKeyChecking=no -p 40905 root@$backup_ip
 
 # Tạo file backup_grafana_prometheus.sh với nội dung sau
-cat <<EOL > backup_grafana_prometheus.sh
+cat <<EOL > /home/ubuntu/backup_grafana_prometheus.sh
 #!/bin/bash
 
 Today=\$(date +"%m-%d-%Yat%Hh%M")
@@ -58,10 +58,8 @@ echo "Backup completed at \$(date)"
 EOL
 
 # Cấp quyền thực thi cho script
-chmod +x backup_grafana_prometheus.sh
+chmod +x /home/ubuntu/backup_grafana_prometheus.sh
 
 # Tạo lịch backup tự động
 (crontab -l ; echo "28 13 * * * /home/ubuntu/backup_grafana_prometheus.sh") | crontab -
-
-# Chạy backup test
 /home/ubuntu/backup_grafana_prometheus.sh
