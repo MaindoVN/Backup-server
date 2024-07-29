@@ -6,8 +6,11 @@ sudo apt update
 # Install rclone and expect
 sudo apt install -y rclone expect
 
-# Automatically configure rclone to connect with Google Drive
-expect << EOF
+# Create the rclone configuration script
+cat << 'EOF' > rclone_config.exp
+#!/usr/bin/expect -f
+set timeout -1
+
 spawn rclone config
 expect "n/s/q> "
 send "n\r"
@@ -21,28 +24,31 @@ expect "client_secret> "
 send "\r"
 expect "scope> "
 send "1\r"
-expect "root_folder_id> "
-send "\r"
 expect "service_account_file> "
 send "\r"
 expect "y/n> "
 send "n\r"
 expect "y/n> "
 send "y\r"
-expect "Enter verification code> "
-interact
-EOF
-
-# Resume script after authorization
-expect << EOF
-spawn rclone config
+expect "If your browser doesn't open automatically go to the following link:"
 expect "y/n> "
+send "n\r"
+expect "y/e/d> "
 send "y\r"
 expect "e/n/d/r/c/s/q> "
 send "q\r"
+expect eof
 EOF
 
-# Create backup script for Google Drive
+# Make the script executable
+chmod +x rclone_config.exp
+
+# Run the rclone configuration script
+./rclone_config.exp
+
+cd /home/ubuntu/Downloads/
+
+# Create the backup script for Google Drive
 cat << 'EOF' > backup_googledrive.sh
 #!/bin/bash
 
@@ -87,7 +93,7 @@ EOF
 chmod +x backup_googledrive.sh
 
 # Run the backup script
-/home/ubuntu/backup_googledrive.sh
+./backup_googledrive.sh
 
 # Schedule automatic backups using crontab
 (crontab -l 2>/dev/null; echo "01 15 * * * /home/ubuntu/backup_googledrive.sh") | crontab -
