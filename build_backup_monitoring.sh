@@ -3,6 +3,9 @@
 # Hỏi người dùng nhập địa chỉ IP của máy muốn SSH
 read -p "Nhập địa chỉ IP của máy Backup Server: " backup_ip
 
+# Hỏi người dùng nhập port của máy muốn SSH
+read -p "Nhập port của máy Backup Server: " backup_port
+
 # Tạo key cho ssh
 ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
 
@@ -14,16 +17,10 @@ then
 fi
 
 # Copy key đến máy Backup Server bằng sshpass
-sshpass -p "123456" ssh-copy-id -o StrictHostKeyChecking=no -p 40905 root@$backup_ip
+sshpass -p "123456" ssh-copy-id -o StrictHostKeyChecking=no -p $backup_port root@$backup_ip
 
 # Tạo file backup_grafana_prometheus.sh với nội dung sau
-cat <<EOL > /home/ubuntu/backup_grafana_prometheus.sh
-#!/bin/bash
-
-Today=\$(date +"%m-%d-%Yat%Hh%M")
-TmpBkFol='/backup/monitoring'
-RemoteServer="root@$backup_ip"
-RemotePort="40905"
+cat <<EOL > /hport"
 RemoteFolder="/backup/internal-tools/monitoring/\$Today"
 GrafanaDB='/var/lib/grafana/grafana.db'
 GrafanaFolders='/var/lib/grafana/csv /var/lib/grafana/pdf /var/lib/grafana/png'
@@ -62,4 +59,6 @@ chmod +x /home/ubuntu/backup_grafana_prometheus.sh
 
 # Tạo lịch backup tự động
 (crontab -l ; echo "28 13 * * * /home/ubuntu/backup_grafana_prometheus.sh") | crontab -
+
+# Lệnh chạy backup
 /home/ubuntu/backup_grafana_prometheus.sh
